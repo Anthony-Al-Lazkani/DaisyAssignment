@@ -1,0 +1,97 @@
+[
+  {
+    "id": "r1",
+    "workshopId": "w1",
+    "workshopTitle": "Poterie matin — Tournage",
+    "workshopDate": "2026-06-08",
+    "workshopTime": "09:00",
+    "client": {
+      "name": "Sophie Martin",
+      "email": "sophie.m@email.com",
+      "phone": "+33 6 12 34 56 78"
+    },
+    "date": "2026-05-15",
+    "status": "confirmed",
+    "cancellationPolicy": {
+      "deadline": "2026-06-07T09:00:00Z",
+      "feePercent": 50
+    },
+    "createdAt": "2026-05-15T10:30:00Z"
+  },
+  {
+    "id": "r2",
+    "workshopId": "w1",
+    "workshopTitle": "Poterie matin — Tournage",
+    "workshopDate": "2026-06-08",
+    "workshopTime": "09:00",
+    "client": {
+      "name": "Lucas Bernard",
+      "email": "lucas.b@email.com",
+      "phone": "+33 6 98 76 54 32"
+    },
+    "date": "2026-05-20",
+    "status": "confirmed",
+    "cancellationPolicy": {
+      "deadline": "2026-06-07T09:00:00Z",
+      "feePercent": 50
+    },
+    "createdAt": "2026-05-20T14:00:00Z"
+  },
+  {
+    "id": "r3",
+    "workshopId": "w3",
+    "workshopTitle": "Sculpture modelage",
+    "workshopDate": "2026-06-08",
+    "workshopTime": "10:00",
+    "client": {
+      "name": "Léa Fontaine",
+      "email": "lea.f@email.com",
+      "phone": "+33 6 45 67 89 01"
+    },
+    "date": "2026-06-01",
+    "status": "confirmed",
+    "cancellationPolicy": {
+      "deadline": "2026-06-07T10:00:00Z",
+      "feePercent": 50
+    },
+    "createdAt": "2026-06-01T09:00:00Z"
+  },
+  {
+    "id": "r4",
+    "workshopId": "w3",
+    "workshopTitle": "Sculpture modelage",
+    "workshopDate": "2026-06-08",
+    "workshopTime": "10:00",
+    "client": {
+      "name": "Hugo Chevalier",
+      "email": "hugo.c@email.com",
+      "phone": "+33 6 23 45 67 89"
+    },
+    "date": "2026-06-07",
+    "status": "confirmed",
+    "cancellationPolicy": {
+      "deadline": "2026-06-07T10:00:00Z",
+      "feePercent": 50
+    },
+    "createdAt": "2026-06-07T08:00:00Z"
+  },
+  {
+    "id": "r5",
+    "workshopId": "w2",
+    "workshopTitle": "Aquarelle débutants",
+    "workshopDate": "2026-06-08",
+    "workshopTime": "14:00",
+    "client": {
+      "name": "Marie Laurent",
+      "email": "marie.l@email.com",
+      "phone": "+33 6 56 78 90 12"
+    },
+    "date": "2026-05-10",
+    "status": "cancelled",
+    "cancellationPolicy": {
+      "deadline": "2026-06-07T14:00:00Z",
+      "feePercent": 50
+    },
+    "createdAt": "2026-05-10T11:00:00Z"
+  }
+]

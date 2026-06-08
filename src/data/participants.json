@@ -1,0 +1,22 @@
+[
+  { "id": "p1", "name": "Sophie Martin", "email": "sophie.m@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p2", "name": "Lucas Bernard", "email": "lucas.b@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p3", "name": "Emma Petit", "email": "emma.p@email.com", "isPresent": true, "hasCancelled": false },
+  { "id": "p4", "name": "Thomas Dubois", "email": "thomas.d@email.com", "isPresent": false, "hasCancelled": true },
+  { "id": "p5", "name": "Camille Roux", "email": "camille.r@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p6", "name": "Antoine Moreau", "email": "antoine.m@email.com", "isPresent": true, "hasCancelled": false },
+  { "id": "p7", "name": "Julie Leroy", "email": "julie.l@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p8", "name": "Nicolas Simon", "email": "nicolas.s@email.com", "isPresent": true, "hasCancelled": false },
+  { "id": "p9", "name": "Marie Laurent", "email": "marie.l@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p10", "name": "Pierre Michel", "email": "pierre.m@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p11", "name": "Sarah Fournier", "email": "sarah.f@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p12", "name": "David Garcia", "email": "david.g@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p13", "name": "Léa Fontaine", "email": "lea.f@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p14", "name": "Hugo Chevalier", "email": "hugo.c@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p15", "name": "Manon Girard", "email": "manon.g@email.com", "isPresent": true, "hasCancelled": false },
+  { "id": "p16", "name": "Romain Blanc", "email": "romain.b@email.com", "isPresent": true, "hasCancelled": false },
+  { "id": "p17", "name": "Clara Noël", "email": "clara.n@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p18", "name": "Adrien Mercier", "email": "adrien.m@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p19", "name": "Chloé Garnier", "email": "chloe.g@email.com", "isPresent": false, "hasCancelled": false },
+  { "id": "p20", "name": "Maxime Faure", "email": "maxime.f@email.com", "isPresent": false, "hasCancelled": false }
+]
