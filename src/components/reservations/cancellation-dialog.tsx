@@ -34,17 +34,13 @@ export function CancellationDialog({
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>
-            {blocked ? "⛔ Annulation impossible" : "✅ Annulation sans frais"}
+            {blocked ? "⛔ Annulation impossible" : "✅ Annulation"}
           </DialogTitle>
           <div className="text-sm text-muted-foreground space-y-2">
             {blocked ? (
               <p>{info.reason}</p>
             ) : (
-              <>
-                <p>Cette réservation peut être annulée sans frais.</p>
-                <p>Remboursement intégral : <strong>{info.refundAmount} €</strong></p>
-                <p className="text-muted-foreground">Confirmez l'annulation ?</p>
-              </>
+              <p>Confirmez l'annulation de cette réservation ?</p>
             )}
           </div>
         </DialogHeader>

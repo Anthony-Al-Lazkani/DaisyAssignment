@@ -53,8 +53,7 @@ function initSchema(): void {
       client_phone TEXT,
       date TEXT NOT NULL,
       status TEXT DEFAULT 'confirmed' CHECK(status IN ('confirmed', 'cancelled', 'pending')),
-      cancellation_deadline TEXT,
-      cancellation_fee_percent REAL DEFAULT 0,
+
       created_at TEXT DEFAULT (datetime('now')),
       FOREIGN KEY (workshop_id) REFERENCES workshops(id)
     );
@@ -241,10 +240,7 @@ export function getReservation(id: string): Reservation | undefined {
     },
     date: r.date,
     status: r.status,
-    cancellationPolicy: {
-      deadline: r.cancellation_deadline ?? "",
-      feePercent: r.cancellation_fee_percent,
-    },
+
     createdAt: r.created_at,
   }
 }
@@ -283,8 +279,8 @@ export function createWorkshop(
   )
 
   const insertReservation = db.prepare(
-    `INSERT INTO reservations (id, workshop_id, client_name, client_email, client_phone, date, status, cancellation_deadline, cancellation_fee_percent, created_at)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO reservations (id, workshop_id, client_name, client_email, client_phone, date, status, created_at)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   )
 
   const transaction = db.transaction(() => {
@@ -313,7 +309,6 @@ export function createWorkshop(
     })
 
     const reservationId = `r${Date.now()}`
-    const deadline = `${data.date}T${data.time}:00Z`
     const today = new Date().toISOString().split("T")[0]
 
     insertReservation.run(
@@ -324,8 +319,6 @@ export function createWorkshop(
       "+33 6 12 34 56 78",
       today,
       "confirmed",
-      deadline,
-      50,
       new Date().toISOString()
     )
 

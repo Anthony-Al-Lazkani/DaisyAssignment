@@ -12,25 +12,21 @@ import type { Reservation, CancellationInfo } from "@/lib/types"
 
 async function computeCancellationInfo(reservation: Reservation): Promise<CancellationInfo> {
   if (reservation.status === "cancelled") {
-    return { isCancellable: false, reason: "Réservation déjà annulée", refundPercent: 0 }
+    return { isCancellable: false, reason: "Réservation déjà annulée" }
   }
 
   const workshopStart = new Date(reservation.workshopDate + "T" + reservation.workshopTime)
   const now = new Date()
   const threeHoursBefore = new Date(workshopStart.getTime() - 3 * 60 * 60 * 1000)
-  const price = 50
 
   if (now >= threeHoursBefore) {
     return {
       isCancellable: false,
       reason: "Délai d'annulation dépassé (3h avant l'atelier)",
-      feeAmount: 0,
-      refundAmount: 0,
-      refundPercent: 0,
     }
   }
 
-  return { isCancellable: true, feeAmount: 0, refundAmount: price, refundPercent: 100 }
+  return { isCancellable: true }
 }
 
 export function ReservationDetail({ id }: { id: string }) {
@@ -74,7 +70,6 @@ export function ReservationDetail({ id }: { id: string }) {
       setCancellationInfo({
         isCancellable: false,
         reason: "Réservation annulée avec succès",
-        refundPercent: cancellationInfo?.refundPercent ?? 0,
       })
       setDialogOpen(false)
     } catch (e) {

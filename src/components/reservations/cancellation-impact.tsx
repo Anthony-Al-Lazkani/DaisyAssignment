@@ -2,10 +2,9 @@ import type { CancellationInfo } from "@/lib/types"
 
 interface CancellationImpactProps {
   info: CancellationInfo
-  price?: number
 }
 
-export function CancellationImpact({ info, price = 50 }: CancellationImpactProps) {
+export function CancellationImpact({ info }: CancellationImpactProps) {
   const blocked = !info.isCancellable
 
   return (
@@ -16,15 +15,13 @@ export function CancellationImpact({ info, price = 50 }: CancellationImpactProps
       }}
     >
       <h3 className="text-sm font-semibold uppercase tracking-wider">
-        {blocked ? "⛔ Non annulable" : "✅ Annulation sans frais"}
+        {blocked ? "⛔ Non annulable" : "✅ Annulation possible"}
       </h3>
 
       {blocked ? (
         <p className="text-sm">{info.reason}</p>
       ) : (
-        <div className="space-y-1 text-sm">
-          <p>Remboursement intégral : <strong>{price} €</strong></p>
-        </div>
+        <p className="text-sm">Cette réservation peut être annulée.</p>
       )}
     </div>
   )

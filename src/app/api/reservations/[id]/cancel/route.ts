@@ -6,24 +6,15 @@ function computeCancellation(reservation: NonNullable<ReturnType<typeof getReser
   const workshopStart = new Date(reservation.workshopDate + "T" + reservation.workshopTime)
   const now = new Date()
   const threeHoursBefore = new Date(workshopStart.getTime() - 3 * 60 * 60 * 1000)
-  const price = 50
 
   if (now >= threeHoursBefore) {
     return {
       isCancellable: false,
       reason: "Délai d'annulation dépassé (3h avant l'atelier)",
-      feeAmount: 0,
-      refundAmount: 0,
-      refundPercent: 0,
     }
   }
 
-  return {
-    isCancellable: true,
-    feeAmount: 0,
-    refundAmount: price,
-    refundPercent: 100,
-  }
+  return { isCancellable: true }
 }
 
 export async function POST(_: Request, { params }: { params: Promise<{ id: string }> }) {

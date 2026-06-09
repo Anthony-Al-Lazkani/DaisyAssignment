@@ -34,19 +34,12 @@ export interface Reservation {
   }
   date: string
   status: 'confirmed' | 'cancelled' | 'pending'
-  cancellationPolicy: {
-    deadline: string
-    feePercent: number
-  }
   createdAt: string
 }
 
 export interface CancellationInfo {
   isCancellable: boolean
   reason?: string
-  feeAmount?: number
-  refundAmount?: number
-  refundPercent: number
 }
 
 export interface SlotFormData {
