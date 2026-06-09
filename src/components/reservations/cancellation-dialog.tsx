@@ -5,7 +5,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
@@ -43,7 +42,7 @@ export function CancellationDialog({
             {state === "warning" && "⚠️ Confirmer l'annulation ?"}
             {state === "success" && "✅ Annulation sans frais"}
           </DialogTitle>
-          <DialogDescription>
+          <div className="text-sm text-muted-foreground">
             {state === "blocked" && (
               <p className="text-sm text-muted-foreground">{info.reason}</p>
             )}
@@ -64,7 +63,7 @@ export function CancellationDialog({
                 <p className="text-muted-foreground">Confirmez l'annulation ?</p>
               </div>
             )}
-          </DialogDescription>
+          </div>
         </DialogHeader>
 
         {state !== "blocked" && (
