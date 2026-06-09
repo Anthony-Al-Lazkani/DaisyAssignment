@@ -6,18 +6,21 @@ import { ClipboardCheck, CalendarPlus, Ban } from "lucide-react"
 
 const features = [
   {
+    key: "checkin",
     href: "/check-in",
     icon: ClipboardCheck,
     title: "Présence & Check-in",
     desc: "Marquez en 30s qui est présent dans votre atelier",
   },
   {
+    key: "creneau",
     href: "/slots/new",
     icon: CalendarPlus,
     title: "Ajouter un créneau",
     desc: "Ouvrez un nouveau créneau pour vos cours",
   },
   {
+    key: "resa",
     href: "/slots/new",
     icon: Ban,
     title: "Annulation réservation",
@@ -64,7 +67,7 @@ export default function Dashboard() {
         {features.map((f) => {
           const Icon = f.icon
           return (
-            <motion.div key={f.href} variants={item}>
+            <motion.div key={f.key} variants={item}>
               <Link
                 href={f.href}
                 className="group block p-4 rounded-xl border-2 border-border bg-card transition-all duration-300 hover:border-primary/40 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-0.5"

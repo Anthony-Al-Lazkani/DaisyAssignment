@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation"
 import { House, ClipboardCheck, CalendarPlus, Ticket } from "lucide-react"
 
 const navItems = [
-  { href: "/", label: "Accueil", icon: House },
-  { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
-  { href: "/slots/new", label: "Créneau", icon: CalendarPlus },
-  { href: "/slots/new", label: "Résa.", icon: Ticket },
+  { key: "home", href: "/", label: "Accueil", icon: House },
+  { key: "checkin", href: "/check-in", label: "Check-in", icon: ClipboardCheck },
+  { key: "creneau", href: "/slots/new", label: "Créneau", icon: CalendarPlus },
+  { key: "resa", href: "/slots/new", label: "Résa.", icon: Ticket },
 ]
 
 export function MobileNav() {
@@ -18,11 +18,11 @@ export function MobileNav() {
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-border">
       <div className="flex justify-around items-center h-16 max-w-lg mx-auto">
         {navItems.map((item) => {
-          const isActive = pathname === item.href || pathname.startsWith(item.href + "/")
+          const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href + "/"))
           const Icon = item.icon
           return (
             <Link
-              key={item.href}
+              key={item.key}
               href={item.href}
               className={`flex flex-col items-center gap-1 px-3 py-1.5 text-xs transition-all duration-200 relative ${
                 isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
