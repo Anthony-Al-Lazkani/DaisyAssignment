@@ -20,7 +20,11 @@ export function WorkshopCheckIn({ id }: { id: string }) {
 
   const now = new Date()
   const workshopStart = workshop ? new Date(`${workshop.date}T${workshop.time}`) : null
-  const canCheckIn = workshopStart ? now >= workshopStart : false
+  const workshopEnd = workshopStart && workshop
+    ? new Date(workshopStart.getTime() + workshop.duration * 60000)
+    : null
+  const canCheckIn = workshopStart && workshopEnd ? now >= workshopStart && now < workshopEnd : false
+  const isPast = workshopEnd ? now >= workshopEnd : false
 
   async function fetchWorkshop() {
     setLoading(true)
@@ -109,7 +113,10 @@ export function WorkshopCheckIn({ id }: { id: string }) {
 
             {!canCheckIn && (
               <div className="rounded-xl bg-muted p-3 text-center text-xs text-muted-foreground">
-                L'appel sera disponible à partir de {workshop.time}
+                {isPast
+                  ? "L'appel est terminé — les présences ne peuvent plus être modifiées"
+                  : `L'appel sera disponible à partir de ${workshop.time}`
+                }
               </div>
             )}
 
