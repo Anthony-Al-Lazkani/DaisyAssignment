@@ -1,7 +1,7 @@
 export {
   getWorkshops,
   getWorkshop,
-  getTodayWorkshops,
+  getWorkshopsByFilter,
   updateParticipantPresence,
   getReservation,
   cancelReservation,

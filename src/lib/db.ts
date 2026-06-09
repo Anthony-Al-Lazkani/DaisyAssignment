@@ -78,8 +78,8 @@ export function getWorkshops(): Workshop[] {
 
   return rows.map((w) => {
     const participants = getParticipantsByWorkshop(w.id)
-    const activeCount = participants.filter((p) => !p.hasCancelled).length
-    const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
+    const presentCount = participants.filter((p) => p.isPresent).length
+    const fillRate = w.capacity > 0 ? Math.round((presentCount / w.capacity) * 100) : 0
 
     const res = getReservationByWorkshop(w.id)
 
@@ -105,8 +105,8 @@ export function getWorkshop(id: string): Workshop | undefined {
   if (!w) return undefined
 
   const participants = getParticipantsByWorkshop(w.id)
-  const activeCount = participants.filter((p) => !p.hasCancelled).length
-  const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
+  const presentCount = participants.filter((p) => p.isPresent).length
+  const fillRate = w.capacity > 0 ? Math.round((presentCount / w.capacity) * 100) : 0
 
   const res = getReservationByWorkshop(w.id)
 
@@ -125,15 +125,38 @@ export function getWorkshop(id: string): Workshop | undefined {
   }
 }
 
-export function getTodayWorkshops(): Workshop[] {
-  const today = new Date().toISOString().split("T")[0]
+export function getWorkshopsByFilter(filter: "today" | "upcoming" | "cancelled"): Workshop[] {
   const db = getDb()
-  const rows = db.prepare("SELECT * FROM workshops WHERE date = ? ORDER BY time").all(today) as any[]
+  const today = new Date().toISOString().split("T")[0]
+
+  const noCancelled = "AND NOT EXISTS (SELECT 1 FROM participants p2 WHERE p2.workshop_id = w.id AND p2.has_cancelled = 1)"
+
+  let rows: any[]
+  switch (filter) {
+    case "today":
+      rows = db.prepare(`SELECT * FROM workshops w WHERE w.date = ? ${noCancelled} ORDER BY w.time`).all(today)
+      break
+    case "upcoming":
+      rows = db.prepare(`SELECT * FROM workshops w WHERE w.date > ? ${noCancelled} ORDER BY w.date, w.time`).all(today)
+      break
+    case "cancelled":
+      rows = db
+        .prepare(
+          `SELECT DISTINCT w.* FROM workshops w
+           JOIN participants p ON p.workshop_id = w.id
+           WHERE p.has_cancelled = 1
+           ORDER BY w.date DESC, w.time DESC`
+        )
+        .all()
+      break
+    default:
+      return []
+  }
 
   return rows.map((w) => {
     const participants = getParticipantsByWorkshop(w.id)
-    const activeCount = participants.filter((p) => !p.hasCancelled).length
-    const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
+    const presentCount = participants.filter((p) => p.isPresent).length
+    const fillRate = w.capacity > 0 ? Math.round((presentCount / w.capacity) * 100) : 0
 
     const res = getReservationByWorkshop(w.id)
 
@@ -226,10 +249,18 @@ export function getReservation(id: string): Reservation | undefined {
 
 export function cancelReservation(id: string): boolean {
   const db = getDb()
-  const result = db
-    .prepare("UPDATE reservations SET status = 'cancelled' WHERE id = ? AND status != 'cancelled'")
-    .run(id)
-  return result.changes > 0
+  const res = db.prepare(
+    "SELECT workshop_id, client_name FROM reservations WHERE id = ? AND status != 'cancelled'"
+  ).get(id) as { workshop_id: string; client_name: string } | undefined
+  if (!res) return false
+
+  db.prepare("UPDATE reservations SET status = 'cancelled' WHERE id = ?").run(id)
+
+  db.prepare(
+    "UPDATE participants SET has_cancelled = 1 WHERE workshop_id = ? AND name = ?"
+  ).run(res.workshop_id, res.client_name)
+
+  return true
 }
 
 export function createWorkshop(

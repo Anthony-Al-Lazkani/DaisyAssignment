@@ -18,6 +18,10 @@ export function WorkshopCheckIn({ id }: { id: string }) {
   const [editOpen, setEditOpen] = useState(false)
   const router = useRouter()
 
+  const now = new Date()
+  const workshopStart = workshop ? new Date(`${workshop.date}T${workshop.time}`) : null
+  const canCheckIn = workshopStart ? now >= workshopStart : false
+
   async function fetchWorkshop() {
     setLoading(true)
     setError(null)
@@ -103,11 +107,17 @@ export function WorkshopCheckIn({ id }: { id: string }) {
 
             <Separator />
 
+            {!canCheckIn && (
+              <div className="rounded-xl bg-muted p-3 text-center text-xs text-muted-foreground">
+                L'appel sera disponible à partir de {workshop.time}
+              </div>
+            )}
+
             <div className="space-y-1">
               {workshop.participants
                 .filter((p) => !p.hasCancelled)
                 .map((p) => (
-                  <ParticipantRow key={p.id} participant={p} onToggle={handleToggle} />
+                  <ParticipantRow key={p.id} participant={p} onToggle={handleToggle} disabled={!canCheckIn} />
                 ))}
               {workshop.participants.filter((p) => p.hasCancelled).length > 0 && (
                 <>
@@ -115,7 +125,7 @@ export function WorkshopCheckIn({ id }: { id: string }) {
                   {workshop.participants
                     .filter((p) => p.hasCancelled)
                     .map((p) => (
-                      <ParticipantRow key={p.id} participant={p} onToggle={handleToggle} />
+                      <ParticipantRow key={p.id} participant={p} onToggle={handleToggle} disabled={!canCheckIn} />
                     ))}
                 </>
               )}

@@ -4,9 +4,10 @@ import { CheckInToggle } from "./check-in-toggle"
 interface ParticipantRowProps {
   participant: Participant
   onToggle: (participantId: string, isPresent: boolean) => Promise<void>
+  disabled?: boolean
 }
 
-export function ParticipantRow({ participant, onToggle }: ParticipantRowProps) {
+export function ParticipantRow({ participant, onToggle, disabled }: ParticipantRowProps) {
   return (
     <div className="flex items-center justify-between py-3 px-2 rounded-lg hover:bg-muted/50">
       <div className="flex items-center gap-3">
@@ -18,7 +19,7 @@ export function ParticipantRow({ participant, onToggle }: ParticipantRowProps) {
           <p className="text-xs text-muted-foreground">{participant.email}</p>
         </div>
       </div>
-      <CheckInToggle participant={participant} onToggle={onToggle} />
+      <CheckInToggle participant={participant} onToggle={onToggle} disabled={disabled} />
     </div>
   )
 }
