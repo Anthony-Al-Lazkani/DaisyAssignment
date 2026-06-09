@@ -81,6 +81,8 @@ export function getWorkshops(): Workshop[] {
     const activeCount = participants.filter((p) => !p.hasCancelled).length
     const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
 
+    const res = getReservationByWorkshop(w.id)
+
     return {
       id: w.id,
       title: w.title,
@@ -92,6 +94,7 @@ export function getWorkshops(): Workshop[] {
       fillRate,
       price: w.price,
       participants,
+      reservationId: res?.id,
     }
   })
 }
@@ -105,6 +108,8 @@ export function getWorkshop(id: string): Workshop | undefined {
   const activeCount = participants.filter((p) => !p.hasCancelled).length
   const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
 
+  const res = getReservationByWorkshop(w.id)
+
   return {
     id: w.id,
     title: w.title,
@@ -116,6 +121,7 @@ export function getWorkshop(id: string): Workshop | undefined {
     fillRate,
     price: w.price,
     participants,
+    reservationId: res?.id,
   }
 }
 
@@ -129,6 +135,8 @@ export function getTodayWorkshops(): Workshop[] {
     const activeCount = participants.filter((p) => !p.hasCancelled).length
     const fillRate = w.capacity > 0 ? Math.round((activeCount / w.capacity) * 100) : 0
 
+    const res = getReservationByWorkshop(w.id)
+
     return {
       id: w.id,
       title: w.title,
@@ -140,6 +148,7 @@ export function getTodayWorkshops(): Workshop[] {
       fillRate,
       price: w.price,
       participants,
+      reservationId: res?.id,
     }
   })
 }
@@ -307,6 +316,39 @@ export function createWorkshop(
     },
     reservationId,
   }
+}
+
+function getReservationByWorkshop(workshopId: string): { id: string } | undefined {
+  const db = getDb()
+  return db.prepare("SELECT id FROM reservations WHERE workshop_id = ? LIMIT 1").get(workshopId) as any
+}
+
+export function updateWorkshop(
+  id: string,
+  data: Partial<Pick<Workshop, "title" | "time" | "duration" | "studio" | "capacity" | "price">>
+): boolean {
+  const db = getDb()
+  const fields: string[] = []
+  const values: any[] = []
+
+  if (data.title !== undefined) { fields.push("title = ?"); values.push(data.title) }
+  if (data.time !== undefined) { fields.push("time = ?"); values.push(data.time) }
+  if (data.duration !== undefined) { fields.push("duration = ?"); values.push(data.duration) }
+  if (data.studio !== undefined) { fields.push("studio = ?"); values.push(data.studio) }
+  if (data.capacity !== undefined) { fields.push("capacity = ?"); values.push(data.capacity) }
+  if (data.price !== undefined) { fields.push("price = ?"); values.push(data.price) }
+
+  if (fields.length === 0) return false
+
+  values.push(id)
+  const result = db.prepare(`UPDATE workshops SET ${fields.join(", ")} WHERE id = ?`).run(...values)
+  return result.changes > 0
+}
+
+export function deleteReservation(id: string): boolean {
+  const db = getDb()
+  const result = db.prepare("DELETE FROM reservations WHERE id = ?").run(id)
+  return result.changes > 0
 }
 
 export function delay(ms: number = 800): Promise<void> {

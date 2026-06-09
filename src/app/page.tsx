@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { motion, type Variants } from "framer-motion"
-import { ClipboardCheck, CalendarPlus, Ban } from "lucide-react"
+import { ClipboardCheck, CalendarPlus } from "lucide-react"
 
 const features = [
   {
@@ -18,13 +18,6 @@ const features = [
     icon: CalendarPlus,
     title: "Ajouter un créneau",
     desc: "Ouvrez un nouveau créneau pour vos cours",
-  },
-  {
-    key: "resa",
-    href: "/slots/new",
-    icon: Ban,
-    title: "Annulation réservation",
-    desc: "Créez un atelier → une réservation de démo est générée automatiquement",
   },
 ]
 

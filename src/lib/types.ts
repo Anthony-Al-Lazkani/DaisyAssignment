@@ -9,6 +9,7 @@ export interface Workshop {
   fillRate: number
   price: number
   participants: Participant[]
+  reservationId?: string
 }
 
 export interface Participant {
