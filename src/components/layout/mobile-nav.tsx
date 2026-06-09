@@ -8,7 +8,7 @@ const navItems = [
   { href: "/", label: "Accueil", icon: House },
   { href: "/check-in", label: "Check-in", icon: ClipboardCheck },
   { href: "/slots/new", label: "Créneau", icon: CalendarPlus },
-  { href: "/reservations/r1", label: "Résa.", icon: Ticket },
+  { href: "/slots/new", label: "Résa.", icon: Ticket },
 ]
 
 export function MobileNav() {

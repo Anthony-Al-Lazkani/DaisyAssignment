@@ -7,6 +7,7 @@ export interface Workshop {
   studio: string
   capacity: number
   fillRate: number
+  price: number
   participants: Participant[]
 }
 

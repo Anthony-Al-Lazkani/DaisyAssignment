@@ -4,10 +4,12 @@ import type { SlotFormData } from "@/lib/types"
 
 interface SlotConfirmationProps {
   slot: SlotFormData
+  workshopId?: string
+  reservationId?: string
   onReset: () => void
 }
 
-export function SlotConfirmation({ slot, onReset }: SlotConfirmationProps) {
+export function SlotConfirmation({ slot, workshopId, reservationId, onReset }: SlotConfirmationProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 text-center space-y-6">
       <span className="text-6xl">🎉</span>
@@ -18,9 +20,18 @@ export function SlotConfirmation({ slot, onReset }: SlotConfirmationProps) {
         </p>
       </div>
       <div className="flex flex-col gap-3 w-full max-w-xs">
-        <Link href="/check-in" className="w-full">
-          <Button className="w-full">Voir les ateliers</Button>
-        </Link>
+        {workshopId && (
+          <Link href={`/check-in/${workshopId}`} className="w-full">
+            <Button className="w-full">Faire l'appel des présences</Button>
+          </Link>
+        )}
+        {reservationId && (
+          <Link href={`/reservations/${reservationId}`} className="w-full">
+            <Button variant="outline" className="w-full">
+              Voir la réservation de démo
+            </Button>
+          </Link>
+        )}
         <Button variant="outline" onClick={onReset}>
           Ajouter un autre créneau
         </Button>

@@ -18,10 +18,10 @@ const features = [
     desc: "Ouvrez un nouveau créneau pour vos cours",
   },
   {
-    href: "/reservations/r1",
+    href: "/slots/new",
     icon: Ban,
     title: "Annulation réservation",
-    desc: "Consultez et gérez les annulations",
+    desc: "Créez un atelier → une réservation de démo est générée automatiquement",
   },
 ]
 

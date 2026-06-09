@@ -1,62 +1,73 @@
 # Daisy Pro
 
-**Daisy Pro** est une interface SaaS B2B pour les ateliers créatifs. Cette implémentation couvre **3 fonctionnalités clés** du quotidien des artistes.
+**Daisy Pro** est une interface SaaS B2B pour les ateliers créatifs — avec une **base de données SQLite** pour une persistance réelle.
 
 ## Features
 
 | # | Feature | Flux |
 |---|---------|------|
 | A | **Présence & Check-in** | Liste des ateliers du jour → détail → marquer présent/absent |
-| B | **Ajout d'un créneau** | Formulaire (date, heure, durée, capacité, prix) → prévisualisation → confirmation |
-| C | **Annulation d'une réservation** | Détail réservation + politique → impact → confirmation avec 3 états |
+| B | **Ajout d'un créneau** | Formulaire → prévisualisation → confirmation (persisté en SQLite) |
+| C | **Annulation d'une réservation** | Détail + politique → impact → confirmation avec 3 états |
 
 ## Lancer le projet
 
 ```bash
 npm install
-npm run dev      # → http://localhost:3000
-npm run build    # build de production
+npm run dev       # → http://localhost:3000 (base vide)
 ```
 
-Stack : **Next.js 16** + **TailwindCSS v4** + **shadcn/ui** (Base UI)
+Stack : **Next.js 16** + **TailwindCSS v4** + **shadcn/ui** + **better-sqlite3**
 
-## Architecture des composants
+## Architecture
 
 ```
-components/
-├── layout/          Header + MobileNav (bottom tab)
-├── shared/          StateWrapper (loading/empty/error + retry)
-├── check-in/        TodayWorkshopsList → WorkshopCard → ParticipantRow + Toggle
-├── slots/           SlotForm → SlotPreview → SlotConfirmation
-└── reservations/    ReservationDetail → ClientInfo, CancellationPolicy, CancellationDialog
+src/
+├── lib/
+│   ├── db.ts          # Connection SQLite, schéma, CRUD complet
+│   └── types.ts       # Types partagés
+├── app/api/           # 7 routes API → SQLite
+├── components/
+│   ├── check-in/      # Liste ateliers → détail → toggle présence
+│   ├── slots/         # Formulaire → preview → confirmation
+│   └── reservations/  # Détail → politique → dialogue d'annulation
+└── data/
+    └── daisy.db       # Fichier SQLite (créé automatiquement)
 ```
 
-### Découpage — pourquoi ?
+### Démarrage à vide
 
-- **StateWrapper** : centralise les 4 états (loading, empty, error, success) — élimine la duplication dans chaque page. Chaque page reçoit `{loading, error, data, children}` et passe le fetch au parent.
-- **Séparation feature par dossier** : chaque feature a son propre module — quelqu'un qui reprend le code demain voit immédiatement le périmètre de chaque fonctionnalité.
-- **MobileNav en bas** : mobile-first (360–414px). Thumb zone = navigation à une main. 4 onglets : Accueil, Check-in, Créneau, Réservation.
+La base de données est créée automatiquement et vide au premier lancement.
+1. **Créer un atelier** via `/slots/new` (formulaire date/heure/durée/capacité/prix)
+2. La création génère automatiquement 8 participants fictifs + 1 réservation de démo
+3. L'atelier apparaît dans la **liste du jour** → on peut y faire l'appel
+4. La réservation permet de tester le **flux d'annulation** (3 états)
+
+### Découpage technique
+
+- **SQLite (`better-sqlite3`)** : chaque mutation (`check-in`, `création`, `annulation`) écrit immédiatement sur disque.
+- **Participants générés à la création** : liste statique de 8 noms créés en DB lors de l'ajout d'un créneau (pas de seed préalable).
+- **`serverExternalPackages`** : configuré dans `next.config.ts` pour isoler `better-sqlite3` côté serveur.
 
 ### Arbitrages UI
 
 | Décision | Pourquoi |
 |----------|----------|
-| **Skeletons** plutôt que spinners | Donne un aperçu du contenu à venir, plus natif |
-| **Icônes emoji** en remplacement d'icônes vectorielles | Pas de dépendance lourde, évocateur immédiat, léger |
-| **Créme `#FCF8E8` en fond** | Charte Daisy — chaleureux, atelier créatif |
-| **Violet `#800080` primaire / Corail `#F24E3E` accent** | Contrasté, lisible, personnalité forte |
-| **Preview avant création** | Évite les erreurs de saisie — l'artiste vérifie avant de valider |
-| **3 états d'annulation** | Non annulable (rouge), warning (jaune, frais), succès (vert, gratuit) — visible en 1 coup d'œil |
-| **Simulated latency (800ms)** | Volontaire — rend les loading states visibles en démo |
+| **Skeletons** | Donne un aperçu du contenu à venir |
+| **Mobile-first 360–414px** | Usage quotidien sur tablette/téléphone en atelier |
+| **Crème `#FCF8E8` / Violet `#800080` / Corail `#F24E3E`** | Charte Daisy — chaleureux, atelier créatif |
+| **Preview avant création** | L'artiste vérifie avant de valider |
+| **3 états d'annulation** | Non annulable (rouge), warning (frais), gratuit (vert) |
+| **Latence simulée (800ms)** | Rend les loading states visibles en démo |
 
-## API Routes (mock)
+## API Routes
 
-Toutes les routes retournent `{ data?, error? }` avec un délai simulé.
-
-- `GET /api/workshops` — tous les ateliers
-- `GET /api/workshops/today` — ateliers du jour
-- `GET /api/workshops/:id` — détail d'un atelier avec participants
-- `PATCH /api/workshops/:id/checkin` — toggle présence
-- `POST /api/slots` — créer un créneau
-- `GET /api/reservations/:id` — détail réservation
-- `POST /api/reservations/:id/cancel` — annuler (+ calcul impact)
+| Route | Méthode | Description |
+|-------|---------|-------------|
+| `/api/workshops` | GET | Tous les ateliers |
+| `/api/workshops/today` | GET | Ateliers du jour |
+| `/api/workshops/:id` | GET | Détail + participants |
+| `/api/workshops/:id/checkin` | PATCH | Toggle présence |
+| `/api/slots` | POST | Créer un créneau (+ participants + réservation) |
+| `/api/reservations/:id` | GET | Détail réservation |
+| `/api/reservations/:id/cancel` | POST | Annuler (avec calcul d'impact) |

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getTodayWorkshops, delay } from '@/lib/mock-data'
+import { getTodayWorkshops, delay } from '@/lib/db'
 
 export async function GET() {
   await delay()

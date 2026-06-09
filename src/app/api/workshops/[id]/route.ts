@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { getWorkshop, delay } from '@/lib/mock-data'
+import { getWorkshop, delay } from '@/lib/db'
 
 export async function GET(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

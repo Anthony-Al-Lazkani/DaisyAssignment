@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { cancelReservation, getReservation, delay } from '@/lib/mock-data'
+import { cancelReservation, getReservation, delay } from '@/lib/db'
 import type { CancellationInfo } from '@/lib/types'
 
 function computeCancellation(reservation: NonNullable<ReturnType<typeof getReservation>>): CancellationInfo {

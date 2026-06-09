@@ -21,6 +21,8 @@ export function SlotForm() {
   const [step, setStep] = useState<"form" | "preview" | "done">("form")
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [reservationId, setReservationId] = useState<string | null>(null)
+  const [workshopId, setWorkshopId] = useState<string | null>(null)
   const [form, setForm] = useState<SlotFormData>({
     title: "",
     date: "",
@@ -50,6 +52,8 @@ export function SlotForm() {
       })
       const json = await res.json()
       if (!res.ok) throw new Error(json.error || "Erreur")
+      setReservationId(json.data.reservationId)
+      setWorkshopId(json.data.workshop.id)
       setStep("done")
     } catch (e) {
       setError(e instanceof Error ? e.message : "Erreur lors de la création")
@@ -59,7 +63,19 @@ export function SlotForm() {
   }
 
   if (step === "done") {
-    return <SlotConfirmation slot={form} onReset={() => { setForm({ title: "", date: "", time: "", duration: 120, studio: "", capacity: 8, price: 50 }); setStep("form") }} />
+    return (
+      <SlotConfirmation
+        slot={form}
+        workshopId={workshopId ?? undefined}
+        reservationId={reservationId ?? undefined}
+        onReset={() => {
+          setForm({ title: "", date: "", time: "", duration: 120, studio: "", capacity: 8, price: 50 })
+          setReservationId(null)
+          setWorkshopId(null)
+          setStep("form")
+        }}
+      />
+    )
   }
 
   if (step === "preview") {

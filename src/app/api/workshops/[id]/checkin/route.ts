@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { updateParticipantPresence, delay } from '@/lib/mock-data'
+import { updateParticipantPresence, delay } from '@/lib/db'
 
 export async function PATCH(_: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params

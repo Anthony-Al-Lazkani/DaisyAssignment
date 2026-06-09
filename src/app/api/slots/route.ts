@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server'
-import { delay } from '@/lib/mock-data'
+import { createWorkshop, delay } from '@/lib/db'
 
-export async function POST(_: Request) {
-  const body = await _.json()
-  await delay()
-  const newSlot = {
-    id: `w${Date.now()}`,
-    ...body,
-    fillRate: 0,
-    participants: [],
-  }
-  return NextResponse.json({ data: newSlot }, { status: 201 })
+export async function POST(request: Request) {
+  const body = await request.json()
+  await delay(600)
+  const result = createWorkshop(body)
+  return NextResponse.json({ data: result }, { status: 201 })
 }
