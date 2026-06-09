@@ -27,67 +27,44 @@ export function CancellationDialog({
 }: CancellationDialogProps) {
   if (!info) return null
 
-  const state = info.isCancellable
-    ? info.feeAmount && info.feeAmount > 0
-      ? "warning"
-      : "success"
-    : "blocked"
+  const blocked = !info.isCancellable
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-sm">
         <DialogHeader>
           <DialogTitle>
-            {state === "blocked" && "⛔ Annulation impossible"}
-            {state === "warning" && "⚠️ Confirmer l'annulation ?"}
-            {state === "success" && "✅ Annulation sans frais"}
+            {blocked ? "⛔ Annulation impossible" : "✅ Annulation sans frais"}
           </DialogTitle>
-          <div className="text-sm text-muted-foreground">
-            {state === "blocked" && (
-              <p className="text-sm text-muted-foreground">{info.reason}</p>
-            )}
-            {state === "warning" && (
-              <div className="space-y-2 text-sm">
-                <p>Cette réservation sera annulée avec les frais suivants :</p>
-                <div className="bg-muted p-3 rounded-lg space-y-1">
-                  <p>Frais : <strong className="text-destructive">{info.feeAmount} €</strong></p>
-                  <p>Remboursé : <strong>{info.refundAmount} €</strong></p>
-                </div>
-                <p className="text-muted-foreground">Voulez-vous continuer ?</p>
-              </div>
-            )}
-            {state === "success" && (
-              <div className="space-y-2 text-sm">
+          <div className="text-sm text-muted-foreground space-y-2">
+            {blocked ? (
+              <p>{info.reason}</p>
+            ) : (
+              <>
                 <p>Cette réservation peut être annulée sans frais.</p>
                 <p>Remboursement intégral : <strong>{info.refundAmount} €</strong></p>
                 <p className="text-muted-foreground">Confirmez l'annulation ?</p>
-              </div>
+              </>
             )}
           </div>
         </DialogHeader>
 
-        {state !== "blocked" && (
-          <DialogFooter className="flex gap-2 sm:gap-0">
-            <Button variant="outline" onClick={() => onOpenChange(false)} disabled={confirming}>
-              Retour
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={onConfirm}
-              disabled={confirming}
-            >
-              {confirming ? "Annulation..." : "Confirmer l'annulation"}
-            </Button>
-          </DialogFooter>
-        )}
-
-        {state === "blocked" && (
-          <DialogFooter>
+        <DialogFooter>
+          {blocked ? (
             <Button variant="outline" onClick={() => onOpenChange(false)}>
               Compris
             </Button>
-          </DialogFooter>
-        )}
+          ) : (
+            <div className="flex gap-2 w-full sm:w-auto">
+              <Button variant="outline" onClick={() => onOpenChange(false)} disabled={confirming} className="flex-1">
+                Retour
+              </Button>
+              <Button variant="destructive" onClick={onConfirm} disabled={confirming} className="flex-1">
+                {confirming ? "Annulation..." : "Confirmer l'annulation"}
+              </Button>
+            </div>
+          )}
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   )

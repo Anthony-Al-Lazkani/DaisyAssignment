@@ -11,32 +11,22 @@ import { StateWrapper } from "@/components/shared/state-wrapper"
 import type { Reservation, CancellationInfo } from "@/lib/types"
 
 async function computeCancellationInfo(reservation: Reservation): Promise<CancellationInfo> {
-  const deadline = new Date(reservation.cancellationPolicy.deadline)
-  const now = new Date()
-  const price = 50
-
   if (reservation.status === "cancelled") {
     return { isCancellable: false, reason: "Réservation déjà annulée", refundPercent: 0 }
   }
 
-  if (now > deadline) {
+  const workshopStart = new Date(reservation.workshopDate + "T" + reservation.workshopTime)
+  const now = new Date()
+  const threeHoursBefore = new Date(workshopStart.getTime() - 3 * 60 * 60 * 1000)
+  const price = 50
+
+  if (now >= threeHoursBefore) {
     return {
       isCancellable: false,
-      reason: "Délai d'annulation dépassé (48h avant l'atelier)",
-      feeAmount: price,
+      reason: "Délai d'annulation dépassé (3h avant l'atelier)",
+      feeAmount: 0,
       refundAmount: 0,
       refundPercent: 0,
-    }
-  }
-
-  const hoursUntilDeadline = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60)
-  if (hoursUntilDeadline < 24) {
-    const fee = Math.round(price * (reservation.cancellationPolicy.feePercent / 100))
-    return {
-      isCancellable: true,
-      feeAmount: fee,
-      refundAmount: price - fee,
-      refundPercent: 100 - reservation.cancellationPolicy.feePercent,
     }
   }
 
@@ -129,7 +119,7 @@ export function ReservationDetail({ id }: { id: string }) {
             </div>
 
             <ClientInfo client={reservation.client} />
-            <CancellationPolicy policy={reservation.cancellationPolicy} />
+            <CancellationPolicy />
 
             {cancellationInfo && (
               <CancellationImpact info={cancellationInfo} />

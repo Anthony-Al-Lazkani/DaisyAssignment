@@ -3,28 +3,18 @@ import { cancelReservation, getReservation, delay } from '@/lib/db'
 import type { CancellationInfo } from '@/lib/types'
 
 function computeCancellation(reservation: NonNullable<ReturnType<typeof getReservation>>): CancellationInfo {
-  const deadline = new Date(reservation.cancellationPolicy.deadline)
+  const workshopStart = new Date(reservation.workshopDate + "T" + reservation.workshopTime)
   const now = new Date()
+  const threeHoursBefore = new Date(workshopStart.getTime() - 3 * 60 * 60 * 1000)
   const price = 50
 
-  if (now > deadline) {
+  if (now >= threeHoursBefore) {
     return {
       isCancellable: false,
-      reason: 'Délai d\'annulation dépassé (48h avant l\'atelier)',
-      feeAmount: price,
+      reason: "Délai d'annulation dépassé (3h avant l'atelier)",
+      feeAmount: 0,
       refundAmount: 0,
       refundPercent: 0,
-    }
-  }
-
-  const hoursUntilDeadline = (deadline.getTime() - now.getTime()) / (1000 * 60 * 60)
-  if (hoursUntilDeadline < 24) {
-    const fee = Math.round(price * (reservation.cancellationPolicy.feePercent / 100))
-    return {
-      isCancellable: true,
-      feeAmount: fee,
-      refundAmount: price - fee,
-      refundPercent: 100 - reservation.cancellationPolicy.feePercent,
     }
   }
 
