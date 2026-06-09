@@ -1,8 +1,10 @@
 import Database from "better-sqlite3"
 import path from "path"
+import fs from "fs"
 import type { Workshop, Participant, Reservation, SlotFormData } from "./types"
 
 const DB_PATH = path.join(process.cwd(), "src", "data", "daisy.db")
+fs.mkdirSync(path.dirname(DB_PATH), { recursive: true })
 
 let _db: Database.Database | null = null
 
