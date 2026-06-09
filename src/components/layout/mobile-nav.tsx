@@ -2,13 +2,12 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { House, ClipboardCheck, CalendarPlus, Ticket } from "lucide-react"
+import { House, ClipboardCheck, CalendarPlus } from "lucide-react"
 
 const navItems = [
   { key: "home", href: "/", label: "Accueil", icon: House },
   { key: "checkin", href: "/check-in", label: "Check-in", icon: ClipboardCheck },
   { key: "creneau", href: "/slots/new", label: "Créneau", icon: CalendarPlus },
-  { key: "resa", href: "/slots/new", label: "Résa.", icon: Ticket },
 ]
 
 export function MobileNav() {
