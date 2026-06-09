@@ -23,7 +23,10 @@ export function WorkshopCheckIn({ id }: { id: string }) {
   const workshopEnd = workshopStart && workshop
     ? new Date(workshopStart.getTime() + workshop.duration * 60000)
     : null
-  const canCheckIn = workshopStart && workshopEnd ? now >= workshopStart && now < workshopEnd : false
+  const isCancelled = workshop ? workshop.participants.some((p) => p.hasCancelled) : false
+  const canCheckIn = workshopStart && workshopEnd && !isCancelled
+    ? now >= workshopStart && now < workshopEnd
+    : false
   const isPast = workshopEnd ? now >= workshopEnd : false
 
   async function fetchWorkshop() {
@@ -113,9 +116,11 @@ export function WorkshopCheckIn({ id }: { id: string }) {
 
             {!canCheckIn && (
               <div className="rounded-xl bg-muted p-3 text-center text-xs text-muted-foreground">
-                {isPast
-                  ? "L'appel est terminé — les présences ne peuvent plus être modifiées"
-                  : `L'appel sera disponible à partir de ${workshop.time}`
+                {isCancelled
+                  ? "Cet atelier a été annulé — l'appel n'est pas disponible"
+                  : isPast
+                    ? "L'appel est terminé — les présences ne peuvent plus être modifiées"
+                    : `L'appel sera disponible à partir de ${workshop.time}`
                 }
               </div>
             )}
